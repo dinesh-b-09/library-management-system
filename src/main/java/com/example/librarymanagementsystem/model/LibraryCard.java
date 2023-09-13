@@ -22,11 +22,13 @@ public class LibraryCard
     int id;
 
     String cardNo;
+
     @Enumerated(EnumType.STRING)
     CardStatus cardStatus;
 
     @CreationTimestamp
     Date issueDate;
+
     @OneToOne
     @JoinColumn
     @JsonIgnore

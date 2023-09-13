@@ -35,12 +35,14 @@ public class StudentController
 
         return  new ResponseEntity("Invalid Id !!", HttpStatus.BAD_REQUEST);
     }
+
     @DeleteMapping("/delete")
     public ResponseEntity deleteStudent(@RequestParam("id") int regNo)
     {
         String response = studentService.deleteStudent(regNo);
         return new ResponseEntity(response, HttpStatus.OK);
     }
+
     @PutMapping("/update-age")
     public ResponseEntity updateAge(@RequestParam("id") int regNo,@RequestParam("age") int age)
     {

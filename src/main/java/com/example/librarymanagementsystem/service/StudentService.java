@@ -16,6 +16,7 @@ import java.util.UUID;
 @Service
 public class StudentService
 {
+
     @Autowired
     StudentRepository studentRepository;
 
@@ -76,6 +77,7 @@ public class StudentService
     {
         List<String> maleStudentNames = new ArrayList<>();
         List<Student> students = studentRepository.findByGender(Gender.MALE);
+        // manually define own findBy in repo
         for(Student s: students)
         {
             maleStudentNames.add(s.getName());

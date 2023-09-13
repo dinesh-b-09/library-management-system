@@ -8,9 +8,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Integer> {
+public interface StudentRepository extends JpaRepository<Student, Integer>
+{
+
     List<Student> findByGender(Gender gender); // to find if attribute is not primary-key
-    // id is pk, so we can directly search for find() in service layer
+    // id is pk, so hibernate provides us by default for findById() in service layer
+
     Student findByEmail(String email);
 
     Student findByGenderAndEmail(Gender gender, String email);

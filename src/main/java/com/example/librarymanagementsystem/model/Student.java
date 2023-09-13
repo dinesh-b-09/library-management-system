@@ -20,9 +20,12 @@ public class Student
 
     @Column(name = "student_name")
     String name;
+
     int age;
+
     @Column(unique = true,nullable = false)
     String email;
+
     @Enumerated(EnumType.STRING)
     Gender gender;
 
