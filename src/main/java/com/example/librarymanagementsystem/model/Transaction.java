@@ -1,13 +1,12 @@
 package com.example.librarymanagementsystem.model;
 
-import com.example.librarymanagementsystem.Enum.Genre;
+import com.example.librarymanagementsystem.Enum.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Service;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -15,30 +14,27 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Book
+public class Transaction
 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
-    String title;
+    String transactionNo;  // UUID
 
-    int noOfPages;
-
-    double cost;
-
-    boolean issued;
+    @CreationTimestamp
+    Date transactionTime;
 
     @Enumerated(EnumType.STRING)
-    Genre genre;
+    TransactionStatus transactionStatus;
 
     @ManyToOne
     @JoinColumn
-    Author author;
+    LibraryCard libraryCard;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    List<Transaction> transactions = new ArrayList<>();
-
+    @ManyToOne
+    @JoinColumn
+    Book book;
 
 }

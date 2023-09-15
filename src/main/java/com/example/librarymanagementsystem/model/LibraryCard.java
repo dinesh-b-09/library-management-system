@@ -8,6 +8,8 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -33,4 +35,8 @@ public class LibraryCard
     @JoinColumn
     @JsonIgnore
     Student student;
+
+    @OneToMany(mappedBy = "libraryCard", cascade = CascadeType.ALL)
+    List<Transaction> transactions = new ArrayList<>();
+
 }

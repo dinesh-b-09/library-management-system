@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/author")
 public class AuthorController
@@ -27,4 +29,22 @@ public class AuthorController
         String response = authorService.updateEmail(id, emailId);
         return new ResponseEntity(response, HttpStatus.OK);
     }
+
+    // give the names of all books written by a particular author
+    @GetMapping("/get-all-books-by-author/{id}")
+    public ResponseEntity getAllBooksByAuthor(@PathVariable("id") int authorId)
+    {
+        List<String> list = authorService.getAllBooksByAuthor(authorId);
+        return new ResponseEntity(list, HttpStatus.OK);
+    }
+
+    //give the names of authors who have written more than 'x' no. of books
+    @GetMapping("author-names-wrote-more-than-x-books/{x}")
+    public ResponseEntity authorWrittenXBooks(@PathVariable("x") int x)
+    {
+        List<String> list = authorService.authorWrittenXBooks(x);
+        return new ResponseEntity(list, HttpStatus.OK);
+    }
+
+
 }
