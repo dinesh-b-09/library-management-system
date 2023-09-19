@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Builder
 @Setter
 public class LibraryCard
 {
@@ -31,9 +32,9 @@ public class LibraryCard
     @CreationTimestamp
     Date issueDate;
 
+  //  @JsonIgnore -not a good practise to use it becos at the end it still returns model, so go for dto
     @OneToOne
     @JoinColumn
-    @JsonIgnore
     Student student;
 
     @OneToMany(mappedBy = "libraryCard", cascade = CascadeType.ALL)

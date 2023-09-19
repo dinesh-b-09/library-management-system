@@ -1,6 +1,7 @@
 package com.example.librarymanagementsystem.service;
 
 import com.example.librarymanagementsystem.Enum.Genre;
+import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.exception.AuthorNotFoundException;
 import com.example.librarymanagementsystem.model.Author;
 import com.example.librarymanagementsystem.model.Book;
@@ -73,20 +74,63 @@ public class BookService {
 
     }
 
-    public List<String> getBookNamesOfGenreCost(Genre genre)
-    {
-        List<Book> booklist = bookRepository.findAll();
-        List<String> list = new ArrayList<>();
+//    public List<String> getBookNamesOfGenreCost(Genre genre)
+//    {
+//        List<Book> booklist = bookRepository.findAll();
+//        List<String> list = new ArrayList<>();
+//
+//        for(Book book : booklist)
+//        {
+//            if(book.getGenre() == genre && book.getCost() > 500)
+//            {
+//                list.add(book.getTitle());
+//            }
+//        }
+//        return list;
+//    }
 
-        for(Book book : booklist)
-        {
-            if(book.getGenre() == genre && book.getCost() > 500)
-            {
-                list.add(book.getTitle());
-            }
+
+    public List<BookResponse> getBooksByGenreAndCostGreaterThan(String genre, double cost) //SQL
+    {
+
+        List<Book> books = bookRepository.getBooksByGenreAndCostGreaterThan(genre,cost);
+
+        // prepare the response. convert model to dto
+
+        List<BookResponse> response = new ArrayList<>();
+        for(Book book: books){
+            BookResponse bookResponse = new BookResponse();
+            bookResponse.setTitle(book.getTitle());
+            bookResponse.setCost(book.getCost());
+            bookResponse.setGenre(book.getGenre());
+            bookResponse.setNoOfPages(book.getNoOfPages());
+            bookResponse.setAuthorName(book.getAuthor().getName());
+            response.add(bookResponse);
         }
-        return list;
+
+        return response;
     }
+
+
+    public List<BookResponse> getBooksByGenreAndCostGreaterThanHQL(Genre genre, double cost) //HQL
+    {
+
+        List<Book> books = bookRepository.getBooksByGenreAndCostGreaterThanHQL(genre,cost);
+
+        // prepare the response. convert model to dto
+        List<BookResponse> response = new ArrayList<>();
+        for(Book book: books){
+            BookResponse bookResponse = new BookResponse();
+            bookResponse.setTitle(book.getTitle());
+            bookResponse.setCost(book.getCost());
+            bookResponse.setGenre(book.getGenre());
+            bookResponse.setNoOfPages(book.getNoOfPages());
+            bookResponse.setAuthorName(book.getAuthor().getName());
+            response.add(bookResponse);
+        }
+        return response;
+    }
+
 
     public List<String> getBookNamesPagesXY(int x, int y)
     {
@@ -119,4 +163,6 @@ public class BookService {
         }
         return list;
     }
+
+
 }

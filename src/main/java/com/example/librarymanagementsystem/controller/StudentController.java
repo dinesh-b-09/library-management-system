@@ -1,5 +1,7 @@
 package com.example.librarymanagementsystem.controller;
 
+import com.example.librarymanagementsystem.dto.requestDTO.StudentRequest;
+import com.example.librarymanagementsystem.dto.responseDTO.StudentResponse;
 import com.example.librarymanagementsystem.model.Student;
 import com.example.librarymanagementsystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,17 @@ public class StudentController
     @Autowired
     StudentService studentService;
 
+//    @PostMapping("/add")
+//    public ResponseEntity addStudent(@RequestBody Student student)
+//    {
+//        String response = studentService.addStudent(student);
+//        return new ResponseEntity(response, HttpStatus.CREATED);
+//    }
+
     @PostMapping("/add")
-    public ResponseEntity addStudent(@RequestBody Student student)
+    public ResponseEntity addStudent(@RequestBody StudentRequest studentRequest)
     {
-        String response = studentService.addStudent(student);
+        StudentResponse response = studentService.addStudent(studentRequest);
         return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
