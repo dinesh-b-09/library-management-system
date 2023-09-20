@@ -1,5 +1,7 @@
 package com.example.librarymanagementsystem.controller;
 
+import com.example.librarymanagementsystem.dto.requestDTO.AuthorRequest;
+import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
 import com.example.librarymanagementsystem.model.Author;
 import com.example.librarymanagementsystem.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +19,16 @@ public class AuthorController
     AuthorService authorService;
 
     @PostMapping("/add-author")
-    public ResponseEntity addAuthor(@RequestBody Author author)
+    public ResponseEntity addAuthor(@RequestBody AuthorRequest authorRequest)
     {
-        String response = authorService.addAuthor(author);
-        return new ResponseEntity(response, HttpStatus.CREATED);
+        AuthorResponse authorResponse = authorService.addAuthor(authorRequest);
+        return new ResponseEntity(authorResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("update-author-emailId")
     public ResponseEntity updateEmail(@RequestParam("id") int id, @RequestParam("emailId") String emailId)
     {
-        String response = authorService.updateEmail(id, emailId);
+        AuthorResponse response = authorService.updateEmail(id, emailId);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

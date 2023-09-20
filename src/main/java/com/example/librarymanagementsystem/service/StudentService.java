@@ -8,6 +8,8 @@ import com.example.librarymanagementsystem.dto.responseDTO.StudentResponse;
 import com.example.librarymanagementsystem.model.LibraryCard;
 import com.example.librarymanagementsystem.model.Student;
 import com.example.librarymanagementsystem.repository.StudentRepository;
+import com.example.librarymanagementsystem.transformer.LibraryCardTransformer;
+import com.example.librarymanagementsystem.transformer.StudentTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,66 +35,28 @@ public class StudentService
 //        student.setGender(studentRequest.getGender());
 //        student.setEmail(studentRequest.getEmail());
 
-        //create object using builder
-        Student student = Student.builder()
-                .name(studentRequest.getName())
-                .age(studentRequest.getAge())
-                .email(studentRequest.getEmail())
-                .gender(studentRequest.getGender())
-                .build();
+        // convert request dto to model and create object using builder
+        Student student = StudentTransformer.StudentRequestToStudent(studentRequest);
 
+        //  give a library card and create object using builder
+        LibraryCard libraryCard = LibraryCardTransformer.prepareLibraryCard();
 
-        // give a library card
-//        LibraryCard libraryCard = new LibraryCard();
-//        libraryCard.setCardNo(String.valueOf(UUID.randomUUID()));
-//        libraryCard.setCardStatus(CardStatus.ACTIVE);
-//        libraryCard.setStudent(student);
-
-        //create object using builder
-        LibraryCard libraryCard = LibraryCard.builder()
-                .cardNo(String.valueOf(UUID.randomUUID()))
-                .cardStatus(CardStatus.ACTIVE)
-                .student(student)
-                .build();
-
-
+        libraryCard.setStudent(student);
 
         student.setLibraryCard(libraryCard);  // set card library for student
         Student savedStudent = studentRepository.save(student); // save both student and library card as we used cascadeType.ALl
 
-        // saved model to response DTO  and
-//        StudentResponse studentResponse = new StudentResponse();
-//        studentResponse.setName(savedStudent.getName());
-//        studentResponse.setEmail(savedStudent.getEmail());
-//        studentResponse.setMessage("You have been Registered");
-   //     studentResponse.setCardIssuedNo(savedStudent.getLibraryCard().getCardNo());
 
-        // create object using builder
-        StudentResponse studentResponse = StudentResponse.builder()
-                .name(savedStudent.getName())
-                .email(savedStudent.getEmail())
-                .message("You have been registered")
-                .build();
-
-        // create object using builder
-        LibraryCardResponse cardResponse = LibraryCardResponse.builder()
-                        .cardNo(savedStudent.getLibraryCard().getCardNo())
-                        .cardStatus((savedStudent.getLibraryCard().getCardStatus()))
-                        .issueDate(savedStudent.getLibraryCard().getIssueDate())
-                        .build();
-
-
-        studentResponse.setLibraryCardResponse(cardResponse);  // save LibraryCardResponse in StudentResponse
-
-        return studentResponse;
+        return StudentTransformer.StudentToStudentResponse(savedStudent);
     }
 
-    public Student getStudent(int regNo)
+    public StudentResponse getStudent(int regNo)
     {
         Optional<Student> optionalStudent = studentRepository.findById(regNo);
         if(optionalStudent.isPresent())
         {
-            return  optionalStudent.get();
+            Student student = optionalStudent.get();
+            return  StudentTransformer.StudentToStudentResponse(student);
         }
         return null;
     }
@@ -109,7 +73,7 @@ public class StudentService
 
     }
 
-    public String updateAge(int regNo, int age)
+    public StudentResponse updateAge(int regNo, int age)
     {
         Optional<Student> optionalStudent = studentRepository.findById(regNo);
         if(optionalStudent.isPresent())
@@ -117,26 +81,33 @@ public class StudentService
             Student student = studentRepository.findById(regNo).get();
             student.setAge(age);
             studentRepository.save(student);
-            return "Age Updated Successfully";
+            return StudentTransformer.StudentToStudentResponse(student);
         }
-        return "Invalid RegNo given";
+        return null;
     }
 
-    public List<Student> getAllStudents()
+    public List<StudentResponse> getAllStudents()
     {
-        return studentRepository.findAll();
+        List<Student> students = studentRepository.findAll();
+        List<StudentResponse> studentResponses = new ArrayList<>();
+
+        for(Student student : students)
+        {
+            studentResponses.add(StudentTransformer.StudentToStudentResponse(student));
+        }
+        return studentResponses;
     }
 
 
-    public List<String> getAllMaleStudents()
+    public List<StudentResponse> getAllMaleStudents()
     {
-        List<String> maleStudentNames = new ArrayList<>();
+        List<StudentResponse> maleStudentList = new ArrayList<>();
         List<Student> students = studentRepository.findByGender(Gender.MALE);
         // manually define own findBy in repo
         for(Student s: students)
         {
-            maleStudentNames.add(s.getName());
+            maleStudentList.add(StudentTransformer.StudentToStudentResponse(s));
         }
-        return maleStudentNames;
+        return maleStudentList;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.librarymanagementsystem.service;
 
 import com.example.librarymanagementsystem.Enum.Genre;
+import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
 import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.exception.AuthorNotFoundException;
 import com.example.librarymanagementsystem.model.Author;
@@ -8,6 +9,8 @@ import com.example.librarymanagementsystem.model.Book;
 
 import com.example.librarymanagementsystem.repository.AuthorRepository;
 import com.example.librarymanagementsystem.repository.BookRepository;
+import com.example.librarymanagementsystem.transformer.AuthorTransformer;
+import com.example.librarymanagementsystem.transformer.BookTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +52,8 @@ public class BookService {
 
         if(optionalBook.isPresent())
         {
-  //          Book book = bookRepository.findById(id).get();
-//            Author author = book.getAuthor();
+
             bookRepository.deleteById(id);
-   //         bookRepository.save(book);
             return "book deleted";
         }
         return "invalid id";
@@ -98,14 +99,9 @@ public class BookService {
         // prepare the response. convert model to dto
 
         List<BookResponse> response = new ArrayList<>();
-        for(Book book: books){
-            BookResponse bookResponse = new BookResponse();
-            bookResponse.setTitle(book.getTitle());
-            bookResponse.setCost(book.getCost());
-            bookResponse.setGenre(book.getGenre());
-            bookResponse.setNoOfPages(book.getNoOfPages());
-            bookResponse.setAuthorName(book.getAuthor().getName());
-            response.add(bookResponse);
+        for(Book book: books)
+        {
+            response.add(BookTransformer.BookToBookResponse(book));
         }
 
         return response;
@@ -119,45 +115,38 @@ public class BookService {
 
         // prepare the response. convert model to dto
         List<BookResponse> response = new ArrayList<>();
-        for(Book book: books){
-            BookResponse bookResponse = new BookResponse();
-            bookResponse.setTitle(book.getTitle());
-            bookResponse.setCost(book.getCost());
-            bookResponse.setGenre(book.getGenre());
-            bookResponse.setNoOfPages(book.getNoOfPages());
-            bookResponse.setAuthorName(book.getAuthor().getName());
-            response.add(bookResponse);
+        for(Book book: books)
+        {
+            response.add(BookTransformer.BookToBookResponse(book));
         }
         return response;
     }
 
 
-    public List<String> getBookNamesPagesXY(int x, int y)
+    public List<BookResponse> getBookPagesXY(int x, int y)
     {
-        List<Book> booklist = bookRepository.findAll();
-        List<String> list = new ArrayList<>();
+        List<Book> booklist = bookRepository.getBookPagesXY(x, y);
+        List<BookResponse> list = new ArrayList<>();
 
         for(Book book : booklist)
         {
-            if(book.getNoOfPages() >= x && book.getNoOfPages() <= y)
-            {
-                list.add(book.getTitle());
-            }
+                list.add(BookTransformer.BookToBookResponse(book));
         }
         return list;
     }
 
-    public List<String> getAuthorNamesOfGenre(Genre genre)
+    public List<AuthorResponse> getAuthorOfGenre(Genre genre)
     {
-        List<String> list = new ArrayList<>();
+        List<AuthorResponse> list = new ArrayList<>();
 
         List<Book> booklist = bookRepository.findByGenre(genre); // custom fn in repo
 
         for(Book book : booklist)
         {
-            if(!list.contains(book.getAuthor().getName()))
+            if(!list.contains(AuthorTransformer.AuthorToAuthorResponse(book.getAuthor())))
             {
-                list.add(book.getAuthor().getName());
+
+                list.add(AuthorTransformer.AuthorToAuthorResponse(book.getAuthor()));
             }
 
         }

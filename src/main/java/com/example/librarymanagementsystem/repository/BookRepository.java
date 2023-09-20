@@ -22,4 +22,8 @@ public interface BookRepository extends JpaRepository<Book, Integer>
 
     @Query(value = "select b from Book b where b.genre = :genre and b.cost > :cost")  //HQL
     List<Book> getBooksByGenreAndCostGreaterThanHQL(Genre genre, double cost); // here we give genre as enum only
+
+
+    @Query(value = "select b from Book b where b.noOfPages >= :x and b.noOfPages <= :y")
+    List<Book> getBookPagesXY(int x, int y);
 }

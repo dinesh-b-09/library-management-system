@@ -1,6 +1,7 @@
 package com.example.librarymanagementsystem.controller;
 
 import com.example.librarymanagementsystem.Enum.Genre;
+import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
 import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.model.Book;
 import com.example.librarymanagementsystem.service.BookService;
@@ -57,7 +58,7 @@ public class BookController
 //        return new ResponseEntity(list, HttpStatus.OK);
 //    }
 
-    //get names of all books particular genre and cost greater than 500 , SQL
+    //get all books of particular genre and cost greater than 500 , SQL
     @GetMapping("/get-books-genre-cost")
     public ResponseEntity getBooksByGenreAndCostGreaterThan(@RequestParam("genre") String genre,
                                                   @RequestParam("cost") double cost)
@@ -78,17 +79,17 @@ public class BookController
 
     //get all books having no. of pages between 'x' and 'y'
     @GetMapping("/get-books-pages-btwn-XY")
-    public ResponseEntity getBookNamesPagesXY(@RequestParam("x") int x, @RequestParam("y") int y)
+    public ResponseEntity getBookPagesXY(@RequestParam("x") int x, @RequestParam("y") int y)
     {
-        List<String> list = bookService.getBookNamesPagesXY(x,y);
+        List<BookResponse> list = bookService.getBookPagesXY(x,y);
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
-    //get names of all authors who write particular genre
+    //get authors who write particular genre
     @GetMapping("/get-author-name-genre")
-    public ResponseEntity getAuthorNamesOfGenre(@RequestParam("genre") Genre genre)
+    public ResponseEntity getAuthorOfGenre(@RequestParam("genre") Genre genre)
     {
-        List<String> list = bookService.getAuthorNamesOfGenre(genre);
+        List<AuthorResponse> list = bookService.getAuthorOfGenre(genre);
         return new ResponseEntity(list, HttpStatus.OK);
     }
 }
