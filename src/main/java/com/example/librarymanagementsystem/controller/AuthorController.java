@@ -29,16 +29,32 @@ public class AuthorController
     @PutMapping("update-author-emailId")
     public ResponseEntity updateEmail(@RequestParam("id") int id, @RequestParam("emailId") String emailId)
     {
-        AuthorResponse response = authorService.updateEmail(id, emailId);
-        return new ResponseEntity(response, HttpStatus.OK);
+        try
+        {
+            AuthorResponse response = authorService.updateEmail(id, emailId);
+            return new ResponseEntity(response, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     // give the names of all books written by a particular author
     @GetMapping("/get-all-books-by-author/{id}")
     public ResponseEntity getAllBooksByAuthor(@PathVariable("id") int authorId)
     {
-        List<BookResponse> list = authorService.getAllBooksByAuthor(authorId);
-        return new ResponseEntity(list, HttpStatus.OK);
+        try
+        {
+            List<BookResponse> list = authorService.getAllBooksByAuthor(authorId);
+            return new ResponseEntity(list, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     //give the names of authors who have written more than 'x' no. of books
@@ -46,6 +62,11 @@ public class AuthorController
     public ResponseEntity authorWrittenXBooks(@PathVariable("x") int x)
     {
         List<AuthorResponse> list = authorService.authorWrittenXBooks(x);
+
+        if(list.isEmpty())
+        {
+            return new ResponseEntity("No Author has more than "+x+" books.", HttpStatus.OK);
+        }
         return new ResponseEntity(list, HttpStatus.OK);
     }
 

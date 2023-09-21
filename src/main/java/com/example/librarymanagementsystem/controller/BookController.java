@@ -39,8 +39,15 @@ public class BookController
     @DeleteMapping("/delete-book")
     public ResponseEntity deleteBook(@RequestParam("id") int id)
     {
-        String response = bookService.deleteBook(id);
-        return new ResponseEntity(response, HttpStatus.OK);
+        try
+        {
+            String response = bookService.deleteBook(id);
+            return new ResponseEntity(response, HttpStatus.OK);
+        }
+       catch (Exception e)
+       {
+           return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+       }
     }
 
     //get all books of a particular genre

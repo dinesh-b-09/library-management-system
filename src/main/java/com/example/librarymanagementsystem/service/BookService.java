@@ -61,13 +61,13 @@ public class BookService {
     {
         Optional<Book> optionalBook = bookRepository.findById(id);
 
-        if(optionalBook.isPresent())
+        if(optionalBook.isEmpty())
         {
+            throw new AuthorNotFoundException("Invalid author id!!!");
 
-            bookRepository.deleteById(id);
-            return "book deleted";
         }
-        return "invalid id";
+        bookRepository.deleteById(id);
+        return "book deleted";
     }
 
     public List<BookResponse> getBookOfGenre(Genre genre)

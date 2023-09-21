@@ -35,28 +35,46 @@ public class StudentController
     @GetMapping("/get")
     public ResponseEntity getStudent(@RequestParam("id") int regNo)
     {
-        StudentResponse studentResponse = studentService.getStudent(regNo);
-
-        if(studentResponse != null)
+        try
         {
+            StudentResponse studentResponse = studentService.getStudent(regNo);
             return new ResponseEntity(studentResponse, HttpStatus.FOUND);
         }
+        catch (Exception e)
+        {
+            return  new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
-        return  new ResponseEntity("Invalid Id !!", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteStudent(@RequestParam("id") int regNo)
     {
-        String response = studentService.deleteStudent(regNo);
-        return new ResponseEntity(response, HttpStatus.OK);
+        try
+        {
+            String response = studentService.deleteStudent(regNo);
+            return new ResponseEntity(response, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PutMapping("/update-age")
     public ResponseEntity updateAge(@RequestParam("id") int regNo,@RequestParam("age") int age)
     {
-        StudentResponse studentResponse = studentService.updateAge(regNo, age);
-        return new ResponseEntity(studentResponse, HttpStatus.ACCEPTED);
+        try
+        {
+            StudentResponse studentResponse = studentService.updateAge(regNo, age);
+            return new ResponseEntity(studentResponse, HttpStatus.ACCEPTED);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("/get-all-students")

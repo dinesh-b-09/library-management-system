@@ -5,6 +5,7 @@ import com.example.librarymanagementsystem.Enum.Gender;
 import com.example.librarymanagementsystem.dto.requestDTO.StudentRequest;
 import com.example.librarymanagementsystem.dto.responseDTO.LibraryCardResponse;
 import com.example.librarymanagementsystem.dto.responseDTO.StudentResponse;
+import com.example.librarymanagementsystem.exception.StudentNotFoundException;
 import com.example.librarymanagementsystem.model.LibraryCard;
 import com.example.librarymanagementsystem.model.Student;
 import com.example.librarymanagementsystem.repository.StudentRepository;
@@ -53,37 +54,40 @@ public class StudentService
     public StudentResponse getStudent(int regNo)
     {
         Optional<Student> optionalStudent = studentRepository.findById(regNo);
-        if(optionalStudent.isPresent())
+        if(optionalStudent.isEmpty())
         {
-            Student student = optionalStudent.get();
-            return  StudentTransformer.StudentToStudentResponse(student);
+            throw new StudentNotFoundException("Invalid Student Id!!");
         }
-        return null;
+        Student student = optionalStudent.get();
+        return  StudentTransformer.StudentToStudentResponse(student);
+
     }
 
     public String deleteStudent(int regNo)
     {
         Optional<Student> optionalStudent = studentRepository.findById(regNo);
-        if(optionalStudent.isPresent())
+        if(optionalStudent.isEmpty())
         {
-            studentRepository.deleteById(regNo);
-            return "Student Deleted Successfully";
+            throw new StudentNotFoundException("Invalid Student Id!!");
         }
-        return "Invalid RegNo";
+
+        studentRepository.deleteById(regNo);
+        return "Student Deleted Successfully";
 
     }
 
     public StudentResponse updateAge(int regNo, int age)
     {
         Optional<Student> optionalStudent = studentRepository.findById(regNo);
-        if(optionalStudent.isPresent())
+        if(optionalStudent.isEmpty())
         {
-            Student student = studentRepository.findById(regNo).get();
-            student.setAge(age);
-            studentRepository.save(student);
-            return StudentTransformer.StudentToStudentResponse(student);
+            throw new StudentNotFoundException("Invalid Student Id!!");
         }
-        return null;
+
+        Student student = studentRepository.findById(regNo).get();
+        student.setAge(age);
+        studentRepository.save(student);
+        return StudentTransformer.StudentToStudentResponse(student);
     }
 
     public List<StudentResponse> getAllStudents()
