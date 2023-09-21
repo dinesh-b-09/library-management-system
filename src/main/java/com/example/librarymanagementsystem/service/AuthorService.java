@@ -3,12 +3,14 @@ package com.example.librarymanagementsystem.service;
 import com.example.librarymanagementsystem.Enum.Gender;
 import com.example.librarymanagementsystem.dto.requestDTO.AuthorRequest;
 import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
+import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.model.Author;
 import com.example.librarymanagementsystem.model.Book;
 import com.example.librarymanagementsystem.model.Student;
 import com.example.librarymanagementsystem.repository.AuthorRepository;
 import com.example.librarymanagementsystem.repository.BookRepository;
 import com.example.librarymanagementsystem.transformer.AuthorTransformer;
+import com.example.librarymanagementsystem.transformer.BookTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,11 +49,10 @@ public class AuthorService {
         return null;
     }
 
-    public List<String> getAllBooksByAuthor(int authorId)
+    public List<BookResponse> getAllBooksByAuthor(int authorId)
     {
-        List<String> bookNames = new ArrayList<>();
+        List<BookResponse> bookNames = new ArrayList<>();
         Optional<Author> authorOptional = authorRepository.findById(authorId);
-
         if(authorOptional.isPresent())
         {
 
@@ -59,7 +60,7 @@ public class AuthorService {
 
             for(Book book : books)
             {
-                bookNames.add(book.getTitle());
+                bookNames.add(BookTransformer.BookToBookResponse(book));
             }
 
         }
@@ -68,16 +69,16 @@ public class AuthorService {
     }
 
 
-    public List<String> authorWrittenXBooks(int x)
+    public List<AuthorResponse> authorWrittenXBooks(int x)
     {
         List<Author> authorList = authorRepository.findAll();
-        List<String> authorsMoreThanXBooks = new ArrayList<>();
+        List<AuthorResponse> authorsMoreThanXBooks = new ArrayList<>();
 
         for(Author author : authorList)
         {
-            if(author.getBooks().size() > x)
+            if(author.getBooks().size() >= x)
             {
-                authorsMoreThanXBooks.add(author.getName());
+                authorsMoreThanXBooks.add(AuthorTransformer.AuthorToAuthorResponse(author));
             }
         }
         return authorsMoreThanXBooks;

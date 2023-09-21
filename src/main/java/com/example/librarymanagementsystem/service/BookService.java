@@ -1,6 +1,8 @@
 package com.example.librarymanagementsystem.service;
 
 import com.example.librarymanagementsystem.Enum.Genre;
+import com.example.librarymanagementsystem.controller.BookController;
+import com.example.librarymanagementsystem.dto.requestDTO.BookRequest;
 import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
 import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.exception.AuthorNotFoundException;
@@ -27,21 +29,30 @@ public class BookService {
     @Autowired
     BookRepository bookRepository;
 
-    public String addBook(Book book)
+    public BookResponse addBook(BookRequest bookRequest)
     {
         // find whether author already exists or not
-        Optional<Author> optionalAuthor = authorRepository.findById(book.getAuthor().getId());
+    //    Book book = BookTransformer.BookRequestToBook(bookRequest);
+        Optional<Author> optionalAuthor = authorRepository.findById(bookRequest.getAuthorId());
         if(optionalAuthor.isEmpty())
         {
             throw new AuthorNotFoundException("Invalid author id!!!");
         }
 
         Author author = optionalAuthor.get();
-        book.setAuthor(author);
-        author.getBooks().add(book);
+        Book book = Book.builder()
+                .author(author)
+                .title(bookRequest.getTitle())
+                .noOfPages(bookRequest.getNoOfPages())
+                .title(bookRequest.getTitle())
+                .cost(bookRequest.getCost())
+                .genre(bookRequest.getGenre())
+                .issued(false)
+                .build();
 
+        author.getBooks().add(book);
         authorRepository.save(author);  // save both author and book
-        return "Book Added Successfully";
+        return BookTransformer.BookToBookResponse(book);
 
     }
 
@@ -59,17 +70,18 @@ public class BookService {
         return "invalid id";
     }
 
-    public List<String> getBookNamesOfGenre(Genre genre)
+    public List<BookResponse> getBookOfGenre(Genre genre)
     {
-        List<Book> booklist = bookRepository.findAll();
-        List<String> list = new ArrayList<>();
+        List<Book> booklist = bookRepository.findByGenre(genre);
+        List<BookResponse> list = new ArrayList<>();
 
         for(Book book : booklist)
         {
-            if(book.getGenre() == genre)
-            {
-                list.add(book.getTitle());
-            }
+//            if(book.getGenre() == genre)  -- did this using custom fn in book repo
+//            {
+//                list.add(book.getTitle());
+//            }
+            list.add(BookTransformer.BookToBookResponse(book));
         }
         return list;
 

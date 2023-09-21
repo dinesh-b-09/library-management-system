@@ -1,6 +1,7 @@
 package com.example.librarymanagementsystem.controller;
 
 import com.example.librarymanagementsystem.Enum.Genre;
+import com.example.librarymanagementsystem.dto.requestDTO.BookRequest;
 import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
 import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.model.Book;
@@ -21,11 +22,11 @@ public class BookController
     BookService bookService;
 
     @PostMapping("/add-book")
-    public ResponseEntity addBook(@RequestBody Book book)
+    public ResponseEntity addBook(@RequestBody BookRequest bookRequest)
     {
         try
         {
-            String response = bookService.addBook(book);
+            BookResponse response = bookService.addBook(bookRequest);
             return new ResponseEntity(response, HttpStatus.CREATED);
         }
         catch(Exception e)
@@ -42,11 +43,11 @@ public class BookController
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    //get names of all books of a particular genre
+    //get all books of a particular genre
     @GetMapping("/get-books-genre")
-    public ResponseEntity getBookNamesOfGenre(@RequestParam("genre") Genre genre)
+    public ResponseEntity getBookOfGenre(@RequestParam("genre") Genre genre)
     {
-        List<String> list = bookService.getBookNamesOfGenre(genre);
+        List<BookResponse> list = bookService.getBookOfGenre(genre);
         return new ResponseEntity(list, HttpStatus.OK);
     }
 

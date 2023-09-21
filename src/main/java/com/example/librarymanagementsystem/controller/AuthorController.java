@@ -2,6 +2,7 @@ package com.example.librarymanagementsystem.controller;
 
 import com.example.librarymanagementsystem.dto.requestDTO.AuthorRequest;
 import com.example.librarymanagementsystem.dto.responseDTO.AuthorResponse;
+import com.example.librarymanagementsystem.dto.responseDTO.BookResponse;
 import com.example.librarymanagementsystem.model.Author;
 import com.example.librarymanagementsystem.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class AuthorController
     @GetMapping("/get-all-books-by-author/{id}")
     public ResponseEntity getAllBooksByAuthor(@PathVariable("id") int authorId)
     {
-        List<String> list = authorService.getAllBooksByAuthor(authorId);
+        List<BookResponse> list = authorService.getAllBooksByAuthor(authorId);
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
@@ -44,9 +45,8 @@ public class AuthorController
     @GetMapping("author-names-wrote-more-than-x-books/{x}")
     public ResponseEntity authorWrittenXBooks(@PathVariable("x") int x)
     {
-        List<String> list = authorService.authorWrittenXBooks(x);
+        List<AuthorResponse> list = authorService.authorWrittenXBooks(x);
         return new ResponseEntity(list, HttpStatus.OK);
     }
-
 
 }
