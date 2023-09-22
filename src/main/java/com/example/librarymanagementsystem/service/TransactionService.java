@@ -13,6 +13,8 @@ import com.example.librarymanagementsystem.repository.StudentRepository;
 import com.example.librarymanagementsystem.repository.TransactionRepository;
 import com.example.librarymanagementsystem.transformer.TransactionTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,6 +30,9 @@ public class TransactionService
 
     @Autowired
     TransactionRepository transactionRepository;
+
+    @Autowired
+    JavaMailSender javaMailSender;
 
     public IssueBookResponse issueBook(int bookId, int studentId)
     {
@@ -69,6 +74,19 @@ public class TransactionService
 
         Book savedBook = bookRepository.save(book);  // book and transaction
         Student savedStudent = studentRepository.save(student);  // student and transaction
+
+        //  send an email
+        String text = "Hi! " + student.getName() + " The below book has been issued to you\n" +
+                book.getTitle() + " \nThis is the transaction number: "+savedTransaction.getTransactionNo();
+
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom("dumyacc1233@gmail.com");
+        simpleMailMessage.setTo(student.getEmail());
+        simpleMailMessage.setSubject("Congrats!! Book Issued");
+        simpleMailMessage.setText(text);
+
+        javaMailSender.send(simpleMailMessage);
+
 
 
         // prepare response
